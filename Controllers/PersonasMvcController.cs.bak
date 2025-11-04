@@ -1,0 +1,93 @@
+using Microsoft.AspNetCore.Mvc;
+using personapi_dotnet.Models.Entities;
+using personapi_dotnet.Repositories;
+using System.Threading.Tasks;
+
+namespace personapi_dotnet.Controllers
+{
+     MVC controller para vistas (no ApiController)
+    [Route(Personas)]
+    public class PersonasMvcController  Controller
+    {
+        private readonly IPersonRepository _repo;
+
+        public PersonasMvcController(IPersonRepository repo)
+        {
+            _repo = repo;
+        }
+
+         GET Personas
+        [HttpGet()]
+        public async TaskIActionResult Index()
+        {
+            var list = await _repo.GetAllAsync();
+            return View(list);
+        }
+
+         GET PersonasDetails111...
+        [HttpGet(Details{cclong})]
+        public async TaskIActionResult Details(long cc)
+        {
+            var p = await _repo.GetByIdAsync(cc);
+            if (p == null) return NotFound();
+            return View(p);
+        }
+
+         GET PersonasCreate
+        [HttpGet(Create)]
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+         POST PersonasCreate
+        [HttpPost(Create)]
+        [ValidateAntiForgeryToken]
+        public async TaskIActionResult Create(Persona persona)
+        {
+            if (!ModelState.IsValid) return View(persona);
+            await _repo.CreateAsync(persona);
+            return RedirectToAction(nameof(Index));
+        }
+
+         GET PersonasEdit111...
+        [HttpGet(Edit{cclong})]
+        public async TaskIActionResult Edit(long cc)
+        {
+            var p = await _repo.GetByIdAsync(cc);
+            if (p == null) return NotFound();
+            return View(p);
+        }
+
+         POST PersonasEdit111...
+        [HttpPost(Edit{cclong})]
+        [ValidateAntiForgeryToken]
+        public async TaskIActionResult Edit(long cc, Persona persona)
+        {
+            if (cc != persona.Cc) return BadRequest();
+            if (!ModelState.IsValid) return View(persona);
+            var ok = await _repo.UpdateAsync(persona);
+            if (!ok) return NotFound();
+            return RedirectToAction(nameof(Index));
+        }
+
+         GET PersonasDelete111...
+        [HttpGet(Delete{cclong})]
+        public async TaskIActionResult Delete(long cc)
+        {
+            var p = await _repo.GetByIdAsync(cc);
+            if (p == null) return NotFound();
+            return View(p);
+        }
+
+         POST PersonasDelete111...
+        [HttpPost(Delete{cclong})]
+        [ValidateAntiForgeryToken]
+        public async TaskIActionResult DeleteConfirmed(long cc)
+        {
+            var ok = await _repo.DeleteAsync(cc);
+            if (!ok) return NotFound();
+            return RedirectToAction(nameof(Index));
+        }
+    }
+}
